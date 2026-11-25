@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Volamp BI</title>
+<meta name="theme-color" content="#6B2430">
+<meta name="description" content="Volamp Elektrikals business dashboard">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Volamp BI">
+<style>
+  html,body{margin:0;height:100%;background:#fff;overflow:hidden;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  #app{position:fixed;inset:0;width:100%;height:100%;border:0;display:block}
+  #splash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#fff;transition:opacity .35s}
+  #splash img{width:112px;height:112px}
+  #splash .bar{width:140px;height:4px;border-radius:2px;background:#f1e6e8;overflow:hidden}
+  #splash .bar i{display:block;width:40%;height:100%;background:#6B2430;animation:run 1.1s ease-in-out infinite}
+  @keyframes run{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}
+  #splash p{margin:0;color:#6B2430;font-weight:600;letter-spacing:.3px}
+  #off{display:none;position:fixed;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:#fff;color:#333;text-align:center;padding:24px}
+  #off button{background:#6B2430;color:#fff;border:0;border-radius:8px;padding:10px 22px;font-size:15px}
+</style>
+</head>
+<body>
+<div id="splash"><img src="icon-192.png" alt=""><p>Volamp BI</p><div class="bar"><i></i></div></div>
+<div id="off"><img src="icon-192.png" alt="" width="80" height="80"><b>No internet connection</b><span>Volamp BI needs the internet. Connect and try again.</span><button onclick="location.reload()">Try again</button></div>
+<script>
+  // The live Volamp BI (Apps Script deployment). Every new deployment version shows here
+  // automatically — the installed app never needs to be downloaded again.
+  var BI_URL = 'https://script.google.com/macros/s/AKfycby_aImhiJdNf6sDK88i5wV7dQ93mFzwSeSzii3_-OP5hV3GLvxAisAgq2ZT9iKE1dfs9g/exec?app=bi';
+
+  function start() {
+    if (!navigator.onLine) { document.getElementById('splash').style.display = 'none'; document.getElementById('off').style.display = 'flex'; return; }
+    var f = document.createElement('iframe');
+    f.id = 'app';
+    f.src = BI_URL;
+    f.allow = 'clipboard-read; clipboard-write; geolocation; camera; microphone; fullscreen; web-share';
+    f.onload = function () { var s = document.getElementById('splash'); s.style.opacity = 0; setTimeout(function(){ s.style.display = 'none'; }, 400); };
+    document.body.insertBefore(f, document.body.firstChild);
+    setTimeout(function(){ if (f.onload) f.onload(); }, 15000); // never leave the splash stuck
+  }
+  window.addEventListener('online', function(){ if (document.getElementById('off').style.display === 'flex') location.reload(); });
+  start();
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
